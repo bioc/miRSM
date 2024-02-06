@@ -1,26 +1,26 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules in heterogeneous data
-Version: 1.99.4
+Version: 2.0.1
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
            role=c("aut", "cre"), 
-           email = "zhangjunpeng411@gmail.com")
+           email = "zjp@dali.edu.cn")
 Description: The package aims to identify miRNA sponge or ceRNA modules in heterogeneous data.
     It provides several functions to study miRNA sponge modules at single-sample 
     and multi-sample levels, including popular methods for inferring gene modules 
     (candidate miRNA sponge or ceRNA modules), and two functions to identify miRNA sponge 
     modules at single-sample and multi-sample levels, as well as several functions 
     to conduct modular analysis of miRNA sponge modules.
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.4.0)
 License: GPL-3
 URL: https://github.com/zhangjunpeng411/miRSM
 Encoding: UTF-8
 biocViews: GeneExpression, BiomedicalInformatics, 
            Clustering, GeneSetEnrichment, Microarray, 
 	         Software, GeneRegulation, GeneTarget
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: WGCNA,
     flashClust,
     dynamicTreeCut,
@@ -28,10 +28,10 @@ Imports: WGCNA,
     igraph,
     linkcomm,
     MCL,
+    fabia,
     NMF,
     biclust,
     iBBiG,
-    fabia,
     BicARE,
     isa2,
     s4vd,

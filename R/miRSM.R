@@ -334,7 +334,7 @@ module_group_sim_matrix <- function(Module.group1,
 
 ## Internal function cluster from miRspongeR package
 ## Disease enrichment analysis of modules
-moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", ont = "DO", padjustvaluecutoff = 0.05,
+moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
                       padjustedmethod = "BH") {
   
   entrezIDs <- lapply(seq_along(Modulelist), function(i) bitr(Modulelist[[i]], fromType = "SYMBOL",
@@ -342,7 +342,7 @@ moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", ont = "DO", padjustval
   
   entrezIDs <- lapply(seq_along(Modulelist), function(i) as.character(entrezIDs[[i]]))
   
-  enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], ont = ont, pvalueCutoff = padjustvaluecutoff,
+  enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
                                                                   pAdjustMethod = padjustedmethod))
   
   enrichDGNs <- lapply(seq_along(Modulelist), function(i) enrichDGN(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
@@ -378,7 +378,7 @@ moduleFEA <- function(Modulelist, ont = "BP", KEGGorganism = "hsa", Reactomeorga
 }
 
 #' Identification of co-expressed gene modules from matched ceRNA and mRNA
-#' expression data using WGCNA package
+#' expression data or single gene expression data using WGCNA package
 #'
 #' @title module_WGCNA
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -445,7 +445,7 @@ module_WGCNA <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using GFA package
+#' expression data or single gene expression data using GFA package
 #'
 #' @title module_GFA
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -470,7 +470,7 @@ module_WGCNA <- function(ceRExp,
 #' @examples
 #' data(BRCASampleData)
 #' modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
-#'     mRExp[seq_len(20), seq_len(15)], iter.max = 2600)
+#'     mRExp[seq_len(20), seq_len(15)], iter.max = 3000)
 #'
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
 #' @references Bunte K, Lepp\'{a}aho E, Saarinen I, Kaski S. 
@@ -528,7 +528,7 @@ module_GFA <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using igraph package
+#' expression data or single gene expression data using igraph package
 #'
 #' @title module_igraph
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -601,7 +601,7 @@ module_igraph <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using ProNet package
+#' expression data or single gene expression data using ProNet package
 #'
 #' @title module_ProNet
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -683,7 +683,7 @@ module_ProNet <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using NMF package
+#' expression data or single gene expression data using NMF package
 #'
 #' @title module_NMF
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -746,7 +746,7 @@ module_NMF <- function(ceRExp,
 }
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using a series of clustering packages, 
+#' expression data or single gene expression data using a series of clustering packages, 
 #' including stats, flashClust, dbscan, subspace, mclust, SOMbrero and ppclust packages.
 #' 
 #' @title module_clust 
@@ -901,9 +901,9 @@ module_clust <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using a series of biclustering packages, 
-#' including biclust, iBBiG, fabia, BicARE, isa2, s4vd, 
-#' BiBitR and rqubic
+#' expression data or single gene expression data using a series  
+#' of biclustering packages, including biclust, iBBiG, fabia,  
+#' BicARE, isa2, s4vd, BiBitR and rqubic
 #'
 #' @title module_biclust
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -1242,7 +1242,7 @@ miRSM_SCC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -1323,7 +1323,7 @@ miRSM_SCC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -1490,7 +1490,7 @@ miRSM_SCC <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -1545,7 +1545,7 @@ miRSM_SDC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -1598,7 +1598,7 @@ miRSM_SDC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNAs:ceRNAs
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -1725,7 +1725,7 @@ miRSM_SDC <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -1781,7 +1781,7 @@ miRSM_SRVC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -1909,7 +1909,7 @@ miRSM_SRVC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2145,7 +2145,7 @@ miRSM_SRVC <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -2259,7 +2259,7 @@ miRSM_SSI <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2321,7 +2321,7 @@ miRSM_SSI <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2455,7 +2455,7 @@ miRSM_SSI <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -2510,7 +2510,7 @@ miRSM_SGCD <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2572,7 +2572,7 @@ miRSM_SGCD <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2706,7 +2706,7 @@ miRSM_SGCD <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -2762,7 +2762,7 @@ miRSM_SCRC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -2846,7 +2846,7 @@ miRSM_SCRC <- function(miRExp = NULL,
     
     comb_index <- t(combn(length(CandidateModulegenes), 2))
     
-    for (i in nrow(comb_index)){
+    for (i in seq(nrow(comb_index))){
       # Calculate significance of miRNAs shared by each ceRNA1:ceRNA2
       tmp1 <- unique(miRTargetCandidate[which(miRTargetCandidate[, 2] %in%
                                                 intersect(CandidateModulegenes[[comb_index[i, 1]]], ceRNames)), 1])
@@ -3014,7 +3014,7 @@ miRSM_SCRC <- function(miRExp = NULL,
   }
   
   if (length(index) == 0) {
-    Result <- "No miRNA sponge modules identified"
+    Result <- "No miRNA sponge modules identified!"
   } else {
     if(is.null(mRExp)){
       miRSM_genes <- lapply(index, function(i) list(CandidateModulegenes[[comb_index[i, 1]]], CandidateModulegenes[[comb_index[i, 2]]]))
@@ -3128,7 +3128,11 @@ diff_module <- function(Module.group1,
   Diff_Module_col <- lapply(which(col.max < sim.cutoff), function(i) Module.group2[[i]])
   Diff_Module <- append(Diff_Module_row, Diff_Module_col)
   
-  names(Diff_Module) <- paste("miRSM", seq(Diff_Module), sep=" ")
+  if (length(Diff_Module) == 0) {
+    Diff_Module <- "No differential modules identified!"
+  } else {
+    names(Diff_Module) <- paste("miRSM", seq(Diff_Module), sep=" ")
+  }
   
   return(Diff_Module)
 }
@@ -3273,7 +3277,7 @@ miRSM <- function(miRExp = NULL,
 
     if (method == "SCC") {
         Res <- miRSM_SCC(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
-            typex = "standard", typez = "standard", nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
+            typex = typex, typez = typez, nperms = nperms, num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, CC.cutoff = MC.cutoff, 
             SCC.cutoff = SMC.cutoff)
     } else if (method == "SDC") {
@@ -3323,24 +3327,24 @@ miRSM <- function(miRExp = NULL,
 #' @examples
 #' data(BRCASampleData)
 #' nsamples <- 3
-#' modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-#' modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
-#'                              module_WGCNA(ceRExp[-i, seq(150)], 
-#'                              mRExp[-i, seq(150)]))
+#' modulegenes_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+#' modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
+#'                               module_WGCNA(ceRExp[-i, seq(150)], 
+#'                               mRExp[-i, seq(150)]))
 #'  
-#' miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
-#'                                miRTarget, modulegenes_igraph_all, 
-#'                                method = "SRVC", SMC.cutoff = 0.01, 
-#'                                RV_method = "RV")
-#' miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
-#'                                    ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
-#'                                    miRTarget, modulegenes_WGCNA_exceptk[[i]],#'                                     
-#'                                    method = "SRVC",
-#'                                    SMC.cutoff = 0.01, RV_method = "RV"))
+#' miRSM_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
+#'                         miRTarget, modulegenes_all, 
+#'                         method = "SRVC", SMC.cutoff = 0.01, 
+#'                         RV_method = "RV")
+#' miRSM_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
+#'                              ceRExp[-i, seq(150)], mRExp[-i, seq(150)], 
+#'                              miRTarget, modulegenes_exceptk[[i]],                                     
+#'                              method = "SRVC",
+#'                              SMC.cutoff = 0.01, RV_method = "RV"))
 #' 
-#' Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
+#' Modulegenes_all <- miRSM_SRVC_all[[2]]
 #' Modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
-#'                               miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+#'                               miRSM_SRVC_exceptk[[i]][[2]])
 #' 
 #' Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 #'
@@ -3366,7 +3370,6 @@ miRSM_SS <- function(Modulelist.all,
 #' @title module_FA
 #' @param Modulelist List object: a list of miRNA sponge modules.
 #' @param GOont One of 'MF', 'BP', and 'CC' subontologies.
-#' @param Diseaseont One of 'DO', and 'DOLite' subontologies.
 #' @param KEGGorganism Organism, supported organism listed 
 #' in http://www.genome.jp/kegg/catalog/org_list.html.
 #' @param Reactomeorganism Organism, one of 'human', 'rat', '
@@ -3416,7 +3419,6 @@ miRSM_SS <- function(Modulelist.all,
 #' OMICS: A Journal of Integrative Biology, 16(5), 284-287.
 module_FA <- function(Modulelist, 
                       GOont = "BP", 
-                      Diseaseont = "DO", 
                       KEGGorganism = "hsa",
                       Reactomeorganism = "human", 
                       OrgDb = "org.Hs.eg.db", 
@@ -3436,7 +3438,7 @@ module_FA <- function(Modulelist,
             Reactomeorganism = Reactomeorganism, OrgDb = OrgDb, padjustvaluecutoff = padjustvaluecutoff,
             padjustedmethod = padjustedmethod)
     } else if (Analysis.type == "DEA") {
-        Res <- moduleDEA(Modulelist, OrgDb = OrgDb, ont = Diseaseont, padjustvaluecutoff = padjustvaluecutoff,
+        Res <- moduleDEA(Modulelist, OrgDb = OrgDb, padjustvaluecutoff = padjustvaluecutoff,
             padjustedmethod = padjustedmethod)
     }
 
@@ -3516,7 +3518,7 @@ module_CEA <- function(ceRExp,
 #'                         modulegenes_WGCNA, method = "SRVC",
 #'                         SMC.cutoff = 0.01, RV_method = "RV")
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-#' Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
+#' Groundtruthcsv <- system.file("extdata", "Groundtruth_high.csv", package="miRSM")
 #' Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",") 
 #' miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 #'
@@ -3692,6 +3694,8 @@ module_Coexpress <- function(ceRExp,
 #' Extract common miRNAs of each miRNA sponge module
 #' 
 #' @title share_miRs
+#' @param miRExp NULL (default) or a SummarizedExperiment object. miRNA expression data: 
+#' rows are samples and columns are miRNAs.
 #' @param miRTarget A SummarizedExperiment object. Putative 
 #' miRNA-target binding information.
 #' @param Modulelist List object: a list of the identified miRNA sponge modules.
@@ -3707,17 +3711,25 @@ module_Coexpress <- function(ceRExp,
 #'                         modulegenes_WGCNA, method = "SRVC",
 #'                         SMC.cutoff = 0.01, RV_method = "RV")
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
-share_miRs <- function(miRTarget, 
+share_miRs <- function(miRExp = NULL,
+                       miRTarget, 
                        Modulelist){
   
   if(class(Modulelist) != "list") {
     stop("Please check your input modules! The input modules should be list object! \n")
   } 
-    
+  
+  if(is.null(miRExp)){
     miRTarget <- assay(miRTarget)
+  } else {
+    miRNames <- colnames(miRExp)
+    miRTarget <- assay(miRTarget)
+    miRTarget <- miRTarget[which(miRTarget[, 1] %in% miRNames), ]  
+  }
+    
     Res <- list()
     for (i in seq_along(Modulelist)){
       modulegenes <- Modulelist[[i]]
@@ -3749,7 +3761,7 @@ share_miRs <- function(miRTarget,
 #'                         modulegenes_WGCNA, method = "SRVC",
 #'                         SMC.cutoff = 0.01, RV_method = "RV")
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 #' miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 #' 
 #' @author Junpeng Zhang (\url{https://www.researchgate.net/profile/Junpeng-Zhang-2})
@@ -3791,7 +3803,7 @@ module_miRdistribute <- function(share_miRs) {
 #'                         modulegenes_WGCNA, method = "SRVC",
 #'                         SMC.cutoff = 0.01, RV_method = "RV")
 #' miRSM_WGCNA_SRVC_genes <- miRSM_WGCNA_SRVC[[2]]
-#' miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+#' miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 #' miRSM_WGCNA_miRtarget <- module_miRtarget(miRSM_WGCNA_share_miRs, 
 #'                                           miRSM_WGCNA_SRVC_genes)
 #' 
