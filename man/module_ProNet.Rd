@@ -40,7 +40,7 @@ GeneSetCollection object: a list of module genes.
 }
 \description{
 Identification of gene modules from matched ceRNA and mRNA 
-expression data using ProNet package
+expression data or single gene expression data using ProNet package
 }
 \examples{
 data(BRCASampleData)

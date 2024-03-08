@@ -378,7 +378,7 @@ moduleFEA <- function(Modulelist, ont = "BP", KEGGorganism = "hsa", Reactomeorga
 }
 
 #' Identification of co-expressed gene modules from matched ceRNA and mRNA
-#' expression data using WGCNA package
+#' expression data or single gene expression data using WGCNA package
 #'
 #' @title module_WGCNA
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -445,7 +445,7 @@ module_WGCNA <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using GFA package
+#' expression data or single gene expression data using GFA package
 #'
 #' @title module_GFA
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -528,7 +528,7 @@ module_GFA <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using igraph package
+#' expression data or single gene expression data using igraph package
 #'
 #' @title module_igraph
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -601,7 +601,7 @@ module_igraph <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using ProNet package
+#' expression data or single gene expression data using ProNet package
 #'
 #' @title module_ProNet
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -683,7 +683,7 @@ module_ProNet <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using NMF package
+#' expression data or single gene expression data using NMF package
 #'
 #' @title module_NMF
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -746,7 +746,7 @@ module_NMF <- function(ceRExp,
 }
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using a series of clustering packages, 
+#' expression data or single gene expression data using a series of clustering packages, 
 #' including stats, flashClust, dbscan, subspace, mclust, SOMbrero and ppclust packages.
 #' 
 #' @title module_clust 
@@ -901,9 +901,9 @@ module_clust <- function(ceRExp,
 
 
 #' Identification of gene modules from matched ceRNA and mRNA 
-#' expression data using a series of biclustering packages, 
-#' including biclust, iBBiG, fabia, BicARE, isa2, s4vd, 
-#' BiBitR and rqubic
+#' expression data or single gene expression data using a series  
+#' of biclustering packages, including biclust, iBBiG, fabia,  
+#' BicARE, isa2, s4vd, BiBitR and rqubic
 #'
 #' @title module_biclust
 #' @param ceRExp A SummarizedExperiment object. ceRNA expression data: 
@@ -3327,24 +3327,24 @@ miRSM <- function(miRExp = NULL,
 #' @examples
 #' data(BRCASampleData)
 #' nsamples <- 3
-#' modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-#' modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
-#'                              module_WGCNA(ceRExp[-i, seq(150)], 
-#'                              mRExp[-i, seq(150)]))
+#' modulegenes_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+#' modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
+#'                               module_WGCNA(ceRExp[-i, seq(150)], 
+#'                               mRExp[-i, seq(150)]))
 #'  
-#' miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
-#'                                miRTarget, modulegenes_igraph_all, 
-#'                                method = "SRVC", SMC.cutoff = 0.01, 
-#'                                RV_method = "RV")
-#' miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
-#'                                    ceRExp[-i,  seq(150)], mRExp[-i,  seq(150)], 
-#'                                    miRTarget, modulegenes_WGCNA_exceptk[[i]],                                     
-#'                                    method = "SRVC",
-#'                                    SMC.cutoff = 0.01, RV_method = "RV"))
+#' miRSM_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
+#'                         miRTarget, modulegenes_all, 
+#'                         method = "SRVC", SMC.cutoff = 0.01, 
+#'                         RV_method = "RV")
+#' miRSM_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
+#'                              ceRExp[-i, seq(150)], mRExp[-i, seq(150)], 
+#'                              miRTarget, modulegenes_exceptk[[i]],                                     
+#'                              method = "SRVC",
+#'                              SMC.cutoff = 0.01, RV_method = "RV"))
 #' 
-#' Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
+#' Modulegenes_all <- miRSM_SRVC_all[[2]]
 #' Modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
-#'                               miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+#'                               miRSM_SRVC_exceptk[[i]][[2]])
 #' 
 #' Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 #'

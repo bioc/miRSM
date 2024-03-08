@@ -31,7 +31,7 @@ GeneSetCollection object: a list of module genes.
 }
 \description{
 Identification of co-expressed gene modules from matched ceRNA and mRNA
-expression data using WGCNA package
+expression data or single gene expression data using WGCNA package
 }
 \examples{
 data(BRCASampleData)

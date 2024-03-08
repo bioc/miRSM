@@ -35,7 +35,7 @@ GeneSetCollection object: a list of module genes.
 }
 \description{
 Identification of gene modules from matched ceRNA and mRNA 
-expression data using GFA package
+expression data or single gene expression data using GFA package
 }
 \examples{
 data(BRCASampleData)
