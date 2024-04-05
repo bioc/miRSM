@@ -334,7 +334,7 @@ module_group_sim_matrix <- function(Module.group1,
 
 ## Internal function cluster from miRspongeR package
 ## Disease enrichment analysis of modules
-moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", ont = "DO", padjustvaluecutoff = 0.05,
+moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0.05,
                       padjustedmethod = "BH") {
   
   entrezIDs <- lapply(seq_along(Modulelist), function(i) bitr(Modulelist[[i]], fromType = "SYMBOL",
@@ -342,7 +342,7 @@ moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", ont = "DO", padjustval
   
   entrezIDs <- lapply(seq_along(Modulelist), function(i) as.character(entrezIDs[[i]]))
   
-  enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], ont = ont, pvalueCutoff = padjustvaluecutoff,
+  enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
                                                                   pAdjustMethod = padjustedmethod))
   
   enrichDGNs <- lapply(seq_along(Modulelist), function(i) enrichDGN(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
@@ -3370,7 +3370,6 @@ miRSM_SS <- function(Modulelist.all,
 #' @title module_FA
 #' @param Modulelist List object: a list of miRNA sponge modules.
 #' @param GOont One of 'MF', 'BP', and 'CC' subontologies.
-#' @param Diseaseont One of 'DO', and 'DOLite' subontologies.
 #' @param KEGGorganism Organism, supported organism listed 
 #' in http://www.genome.jp/kegg/catalog/org_list.html.
 #' @param Reactomeorganism Organism, one of 'human', 'rat', '
@@ -3420,7 +3419,6 @@ miRSM_SS <- function(Modulelist.all,
 #' OMICS: A Journal of Integrative Biology, 16(5), 284-287.
 module_FA <- function(Modulelist, 
                       GOont = "BP", 
-                      Diseaseont = "DO", 
                       KEGGorganism = "hsa",
                       Reactomeorganism = "human", 
                       OrgDb = "org.Hs.eg.db", 
@@ -3440,7 +3438,7 @@ module_FA <- function(Modulelist,
             Reactomeorganism = Reactomeorganism, OrgDb = OrgDb, padjustvaluecutoff = padjustvaluecutoff,
             padjustedmethod = padjustedmethod)
     } else if (Analysis.type == "DEA") {
-        Res <- moduleDEA(Modulelist, OrgDb = OrgDb, ont = Diseaseont, padjustvaluecutoff = padjustvaluecutoff,
+        Res <- moduleDEA(Modulelist, OrgDb = OrgDb, padjustvaluecutoff = padjustvaluecutoff,
             padjustedmethod = padjustedmethod)
     }
 

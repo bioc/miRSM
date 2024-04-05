@@ -7,7 +7,6 @@
 module_FA(
   Modulelist,
   GOont = "BP",
-  Diseaseont = "DO",
   KEGGorganism = "hsa",
   Reactomeorganism = "human",
   OrgDb = "org.Hs.eg.db",
@@ -20,8 +19,6 @@ module_FA(
 \item{Modulelist}{List object: a list of miRNA sponge modules.}
 
 \item{GOont}{One of 'MF', 'BP', and 'CC' subontologies.}
-
-\item{Diseaseont}{One of 'DO', and 'DOLite' subontologies.}
 
 \item{KEGGorganism}{Organism, supported organism listed 
 in http://www.genome.jp/kegg/catalog/org_list.html.}
