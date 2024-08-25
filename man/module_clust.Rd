@@ -38,7 +38,7 @@ GeneSetCollection object: a list of module genes.
 }
 \description{
 Identification of gene modules from matched ceRNA and mRNA 
-expression data using a series of clustering packages, 
+expression data or single gene expression data using a series of clustering packages, 
 including stats, flashClust, dbscan, subspace, mclust, SOMbrero and ppclust packages.
 }
 \examples{

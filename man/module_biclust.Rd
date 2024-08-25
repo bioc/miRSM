@@ -40,9 +40,9 @@ GeneSetCollection object: a list of module genes.
 }
 \description{
 Identification of gene modules from matched ceRNA and mRNA 
-expression data using a series of biclustering packages, 
-including biclust, iBBiG, fabia, BicARE, isa2, s4vd, 
-BiBitR and rqubic
+expression data or single gene expression data using a series  
+of biclustering packages, including biclust, iBBiG, fabia,  
+BicARE, isa2, s4vd, BiBitR and rqubic
 }
 \examples{
 data(BRCASampleData)
