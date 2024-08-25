@@ -1,5 +1,5 @@
 .onAttach <- function(lib, pkg) { 
-    
+
     version <- packageDescription("miRSM", fields = "Version")
     packageStartupMessage( "Citation: Zhang J, Liu L, Xu T, Zhang W, Zhao C, Li S, Li J, Rao N, Le TD,","\n",
       "miRSM: an R package to infer and analyze miRNA sponge modules in heterogeneous data,","\n",
