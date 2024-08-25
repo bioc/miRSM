@@ -18,3 +18,18 @@ citEntry( entry   = "Article",
 	  (2021). miRSM: an R package to infer and analyze miRNA sponge modules in heterogeneous data. 
 	  RNA Biology. https://doi.org/10.1080/15476286.2021.1905341.")
 )
+
+citEntry( entry   = "Article",
+          title   = "Protocol to infer and analyze miRNA sponge modules in heterogeneous data using miRSM 2.0",
+          author  = personList(as.person("Junpeng Zhang"),
+                   as.person("Xuemei Wei"),
+                   as.person("Chunwen Zhao"),
+                   as.person("Haolin Yang")),
+          journal = "STAR Protocols",
+          year    = "2024",
+          url     = "https://doi.org/10.1016/j.xpro.2024.103317",
+
+          textVersion  = paste("Junpeng Zhang, Xuemei Wei, Chunwen Zhao, Haolin Yang
+	  (2024). Protocol to infer and analyze miRNA sponge modules in heterogeneous data using miRSM 2.0. 
+	  STAR Protocols. https://doi.org/10.1016/j.xpro.2024.103317.")
+)

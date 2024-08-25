@@ -5,7 +5,7 @@ knitr::opts_chunk$set(tidy = FALSE,
     message = FALSE)
 
 ## ----echo=FALSE, results='hide', message=FALSE--------------------------------
-library(miRSM)
+suppressPackageStartupMessages(library(miRSM))
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 data(BRCASampleData)
@@ -15,11 +15,11 @@ modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(80)],
                                   mRExp[, seq_len(80)])
 modulegenes_WGCNA
 
-## ----eval=FALSE, include=TRUE-------------------------------------------------
-#  modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
-#                                mRExp[seq_len(20), seq_len(15)],
-#                                iter.max = 2600)
-#  modulegenes_GFA
+## ----eval=TRUE, include=TRUE--------------------------------------------------
+modulegenes_GFA <- module_GFA(ceRExp[seq_len(20), seq_len(15)],
+                              mRExp[seq_len(20), seq_len(15)], 
+                              iter.max = 3000)
+modulegenes_GFA
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)],
@@ -61,18 +61,24 @@ miRSM_igraph_SRVC
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 nsamples <- 3
-modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) 
-                                  module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
-miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
-                               modulegenes_igraph_all, method = "SRVC",
-                               SMC.cutoff = 0.01, RV_method = "RV")
-miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ],      
-                                   ceRExp[-i, seq(150)], mRExp[-i,  seq(150)], miRTarget,
-                                   modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
-                                   SMC.cutoff = 0.01, RV_method = "RV"))
-Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
-Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+modulegenes_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+modulegenes_exceptk <- lapply(seq(nsamples), function(i) 
+                              module_WGCNA(ceRExp[-i, seq(150)], 
+                              mRExp[-i, seq(150)]))
+  
+miRSM_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], 
+                        miRTarget, modulegenes_all, 
+                        method = "SRVC", SMC.cutoff = 0.01, 
+                        RV_method = "RV")
+miRSM_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], 
+                            ceRExp[-i, seq(150)], mRExp[-i, seq(150)], 
+                            miRTarget, modulegenes_exceptk[[i]],
+                            method = "SRVC",
+                            SMC.cutoff = 0.01, RV_method = "RV"))
+
+Modulegenes_all <- miRSM_SRVC_all[[2]]
+Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_SRVC_exceptk[[i]][[2]])
+
 Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
 Modules_SS
 
@@ -100,7 +106,7 @@ miRSM.CEA.pvalue
 
 ## ----eval=FALSE, include=TRUE-------------------------------------------------
 #  # Using the built-in groundtruth from the miRSM package
-#  Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
+#  Groundtruthcsv <- system.file("extdata", "Groundtruth_high.csv", package="miRSM")
 #  Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 #  # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
 #  miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
@@ -112,7 +118,7 @@ miRSM_WGCNA_Coexpress
 
 ## ----eval=TRUE, include=TRUE--------------------------------------------------
 # Using the identified miRNA sponge modules based on WGCNA and sensitivity RV coefficient (SRVC)
-miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 head(miRSM_WGCNA_miRdistribute)
 

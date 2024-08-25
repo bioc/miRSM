@@ -13,7 +13,7 @@ BiocManager::install("miRSM")
 # A quick example to use miRSM package
 ```{r echo=FALSE, results='hide', message=FALSE}
 # Load miRSM package 
-suppressMessages(library(miRSM))
+suppressPackageStartupMessages(library(miRSM))
 
 # Load BRCA sample data
 data(BRCASampleData)
@@ -29,16 +29,19 @@ miRSM_WGCNA_SRVC <- miRSM(miRExp, ceRExp, mRExp, miRTarget,
                         
 # Identifying sample-specific miRNA sponge modules
 nsamples <- 3
-modulegenes_igraph_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
-modulegenes_WGCNA_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
-miRSM_igraph_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
-                               modulegenes_igraph_all, method = "SRVC",
+modulegenes_all <- module_igraph(ceRExp[, 151:300], mRExp[, 151:300])
+modulegenes_exceptk <- lapply(seq(nsamples), function(i) module_WGCNA(ceRExp[-i, seq(150)], mRExp[-i, seq(150)]))
+
+miRSM_SRVC_all <- miRSM(miRExp, ceRExp[, 151:300], mRExp[, 151:300], miRTarget,
+                               modulegenes_all, method = "SRVC",
                                SMC.cutoff = 0.01, RV_method = "RV")
-miRSM_WGCNA_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], ceRExp[-i,                                    seq(150)], mRExp[-i,  seq(150)], miRTarget,
-                                   modulegenes_WGCNA_exceptk[[i]], method = "SRVC",
-                                   SMC.cutoff = 0.01, RV_method = "RV"))
-Modulegenes_all <- miRSM_igraph_SRVC_all[[2]]
-Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_WGCNA_SRVC_exceptk[[i]][[2]])
+miRSM_SRVC_exceptk <- lapply(seq(nsamples), function(i) miRSM(miRExp[-i, ], ceRExp[-i,                                   seq(150)], mRExp[-i,  seq(150)], miRTarget,
+                             modulegenes_exceptk[[i]], method = "SRVC",
+                             SMC.cutoff = 0.01, RV_method = "RV"))
+                             
+Modulegenes_all <- miRSM_SRVC_all[[2]]
+Modulegenes_exceptk <- lapply(seq(nsamples), function(i) miRSM_SRVC_exceptk[[i]][[2]])
+
 Modules_SS <- miRSM_SS(Modulegenes_all, Modulegenes_exceptk)
                         
 # Functional analysis of miRNA sponge modules
@@ -52,7 +55,7 @@ miRSM_WGCNA_SRVC_DEA <- module_FA(miRSM_WGCNA_SRVC_genes,
 miRSM.CEA.pvalue <- module_CEA(ceRExp, mRExp, BRCA_genes, miRSM_WGCNA_SRVC_genes)
 
 # Validation of miRNA sponge interactions in miRNA sponge modules
-Groundtruthcsv <- system.file("extdata", "Groundtruth.csv", package="miRSM")
+Groundtruthcsv <- system.file("extdata", "Groundtruth_high.csv", package="miRSM")
 Groundtruth <- read.csv(Groundtruthcsv, header=TRUE, sep=",")
 miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 
@@ -60,7 +63,7 @@ miRSM.Validate <- module_Validate(miRSM_WGCNA_SRVC_genes, Groundtruth)
 miRSM_WGCNA_Coexpress <-  module_Coexpress(ceRExp, mRExp, miRSM_WGCNA_SRVC_genes, resample = 10, method = "mean", test.method = "t.test")
 
 # Distribution analysis of sharing miRNAs
-miRSM_WGCNA_share_miRs <-  share_miRs(miRTarget, miRSM_WGCNA_SRVC_genes)
+miRSM_WGCNA_share_miRs <-  share_miRs(miRExp, miRTarget, miRSM_WGCNA_SRVC_genes)
 miRSM_WGCNA_miRdistribute <- module_miRdistribute(miRSM_WGCNA_share_miRs)
 
 # Predicting miRNA-target interactions
