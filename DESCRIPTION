@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules in heterogeneous data
-Version: 2.7.1
+Version: 2.9.1
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
@@ -20,7 +20,7 @@ Encoding: UTF-8
 biocViews: GeneExpression, BiomedicalInformatics, 
            Clustering, GeneSetEnrichment, Microarray, 
 	         Software, GeneRegulation, GeneTarget
-RoxygenNote: 7.3.2
+RoxygenNote: 8.0.0
 Imports: WGCNA,
     flashClust,
     dynamicTreeCut,

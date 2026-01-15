@@ -13,13 +13,12 @@ miRSM(
   typex = "standard",
   typez = "standard",
   nperms = 100,
-  method = c("SCC", "SDC", "SRVC", "SM", "SSI", "SGCD", "SCRC"),
+  method = c("SCC", "SDC", "SRVC", "SSI", "SGCD", "SCRC"),
   num_shared_miRNAs = 3,
   pvalue.cutoff = 0.05,
   MC.cutoff = 0.8,
   SMC.cutoff = 0.1,
   RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri"),
-  BCmethod = "BCPlaid",
   CRC_method = c("Coxhead", "Rozeboom")
 )
 }
@@ -70,10 +69,6 @@ SGCD and SCRC methods when miRExp is not NULL.}
 one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
 Only for the SRVC method.}
 
-\item{BCmethod}{Specification of the biclustering method, 
-including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-'BCSpectral', 'BCXmotifs'. Only for the SM method.}
-
 \item{CRC_method}{the method of calculating matrix correlation. Select
 one of 'Coxhead' and 'Rozeboom' methods.
 Only for the SCRC method.}
@@ -86,9 +81,8 @@ and miRNA sponge modules.
 Identify miRNA sponge modules using sensitivity canonical correlation (SCC), 
 sensitivity distance correlation (SDC),
 sensitivity RV coefficient (SRVC), sensitivity similarity index (SSI), 
-sensitivity generalized coefficient of determination (SGCD), 
-sensitivity Coxhead's or Rozeboom's coefficient (SCRC), 
-and sponge module (SM) methods.
+sensitivity generalized coefficient of determination (SGCD), and
+sensitivity Coxhead's or Rozeboom's coefficient (SCRC) methods
 }
 \examples{
 data(BRCASampleData)

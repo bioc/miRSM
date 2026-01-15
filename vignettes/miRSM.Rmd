@@ -114,7 +114,7 @@ modulegenes_biclust
 ```
 
 # Discovery of miRNA sponge modules
-The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, `miRSM` uses the sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC), sensitivity RV coefficient (SRVC), sensitivity similarity index (SSI), sensitivity generalized coefficient of determination (SGCD) and sensitivity Coxhead's or Rozeboom's coefficient (SCRC) methods to identify miRNA sponge modules. In addition, the sponge module (SM) method proposed in [31] is also added to predict miRNA sponge modules. 
+The identified gene modules are regarded as candidate miRNA sponge modules. Based on the candidate miRNA sponge modules, `miRSM` uses the sensitivity canonical correlation (SCC), sensitivity distance correlation (SDC), sensitivity RV coefficient (SRVC), sensitivity similarity index (SSI), sensitivity generalized coefficient of determination (SGCD) and sensitivity Coxhead's or Rozeboom's coefficient (SCRC) methods to identify miRNA sponge modules. 
 
 ```{r, eval=TRUE, include=TRUE}
 modulegenes_igraph <- module_igraph(ceRExp[, seq_len(10)], 
@@ -158,7 +158,7 @@ Modules_SS
 # Modular analysis of miRNA sponge modules
 
 ## Functional analysis of miRNA sponge modules
-`miRSM` implements _module_FA_ function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, DGN and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), DGN: DisGeNET database (<http://www.disgenet.org/>) and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
+`miRSM` implements _module_FA_ function to conduct functional analysis of miRNA sponge modules. The functional analysis includes two types: functional enrichment analysis (FEA) and disease enrichment analysis (DEA). Functional enrichment analysis includes GO, KEGG and Reactome enrichment analysis. The ontology databases used contain GO: Gene Ontology database (<http://www.geneontology.org/>), KEGG: Kyoto Encyclopedia of Genes and Genomes Pathway Database (<http://www.genome.jp/kegg/>), and Reactome: Reactome Pathway Database (<http://reactome.org/>). Disease enrichment analysis includes DO, and NCG enrichment analysis. The disease databases used include DO: Disease Ontology database (<http://disease-ontology.org/>), and NCG: Network of Cancer Genes database (<http://ncg.kcl.ac.uk/>). 
 
 ```{r, eval=FALSE, include=TRUE}
 modulegenes_WGCNA <- module_WGCNA(ceRExp[, seq_len(150)], 
@@ -311,8 +311,6 @@ Journal of Statistical Software. 2012, 46(11):1-17.
 [29] Yang J, Wang H, Wang W, Yu, PS. An improved biclustering method for analyzing gene expression. Int J Artif Intell Tools, 2005, 14(5): 771-789.
 
 [30] Bergmann S, Ihmels J, Barkai N. Iterative signature algorithm for the analysis of large-scale gene expression data. Phys Rev E Stat Nonlin Soft Matter Phys., 2003, 67(3 Pt 1):031902.
-
-[31] Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores. BMC Bioinformatics, 2017, 18(Suppl 3):44. 
 
 # Session information
 ```{r}

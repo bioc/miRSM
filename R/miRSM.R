@@ -1306,13 +1306,10 @@ moduleDEA <- function(Modulelist, OrgDb = "org.Hs.eg.db", padjustvaluecutoff = 0
   enrichDOs <- lapply(seq_along(Modulelist), function(i) enrichDO(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
                                                                   pAdjustMethod = padjustedmethod))
   
-  enrichDGNs <- lapply(seq_along(Modulelist), function(i) enrichDGN(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
-                                                                    pAdjustMethod = padjustedmethod))
-  
   enrichNCGs <- lapply(seq_along(Modulelist), function(i) enrichNCG(entrezIDs[[i]], pvalueCutoff = padjustvaluecutoff,
                                                                     pAdjustMethod = padjustedmethod))
   
-  return(list(enrichDOs, enrichDGNs, enrichNCGs))
+  return(list(enrichDOs, enrichNCGs))
 }
 
 ## Internal function cluster from miRspongeR package
@@ -3045,65 +3042,6 @@ miRSM_SRVC <- function(miRExp = NULL,
   return(Result)
 }
 
-## Identify miRNA sponge modules using sponge module identification (SM) method in 
-## the reference "Zhang J, Le TD, Liu L, Li J. Identifying miRNA sponge modules using biclustering and regulatory scores. 
-## BMC Bioinformatics. 2017 Mar 14;18(Suppl 3):44. doi: 10.1186/s12859-017-1467-5.".
-## Note that miRNA-mRNA correlation matrix using Pearson method and miRNA-mRNA context++ score matrix using putative miRNA-target binding information
-## are converted into two miRNA-mRNA binary matrices.
-## a and b are the contributions of expression data and miRNA-target binding information, respectively.
-miRSM_SM <- function(miRExp = NULL, 
-                     ceRExp, 
-                     mRExp = NULL, 
-                     miRTarget, 
-                     a = 0.5, 
-                     b = 0.5, 
-                     BCmethod = "BCPlaid", 
-                     pvalue.cutoff = 0.05) {
-  
-  Binding_edge <- Bindingmatrix(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget)
-  
-  if(is.null(miRExp)){
-    colScore <- Binding_edge
-    
-  } else {
-    if(is.null(mRExp)){
-      Cor.Pvalue <- WGCNA::corAndPvalue(assay(ceRExp), assay(miRExp))$p
-    } else {
-      Cor.Pvalue <- WGCNA::corAndPvalue(cbind(assay(ceRExp), assay(mRExp)), assay(miRExp))$p
-    }
-    index1 <- which(Cor.Pvalue < pvalue.cutoff)
-    index2 <- c(which(Cor.Pvalue >= pvalue.cutoff), 
-                which(Cor.Pvalue %in% NA))
-    Cor.Pvalue[index1] <- 1
-    Cor.Pvalue[index2] <- 0
-    Cor_edge <- Cor.Pvalue
-    
-    colScore <- a*Cor_edge + b*Binding_edge
-  }
-  
-  if (BCmethod=="BCBimax"){
-    colScore <- binarize(colScore)
-    BCres <- biclust(colScore, BCBimax())
-  } else if (BCmethod=="BCCC") {
-    BCres <- biclust(colScore, BCCC())
-  } else if (BCmethod=="BCPlaid") {
-    BCres <- biclust(colScore, BCPlaid())
-  } else if (BCmethod=="BCQuest") {
-    BCres <- biclust(colScore, BCQuest())
-  } else if (BCmethod=="BCSpectral") {
-    BCres <- biclust(colScore, BCSpectral())
-  } else if (BCmethod=="BCXmotifs") {
-    colScore <- discretize(colScore)
-    BCres <- biclust(colScore, BCXmotifs())
-  } 
-  
-  BCresnum <- biclusternumber(BCres)
-  Modules <- lapply(seq_along(BCresnum), function(i) rownames(Binding_edge)
-                    [BCresnum[[i]]$Rows])
-  
-  return(Modules)
-}
-
 ## Identify miRNA sponge modules using sensitivity similarity index (SSI) method
 miRSM_SSI <- function(miRExp = NULL, 
                       ceRExp, 
@@ -4017,9 +3955,8 @@ diff_module <- function(Module.group1,
 #' Identify miRNA sponge modules using sensitivity canonical correlation (SCC), 
 #' sensitivity distance correlation (SDC),
 #' sensitivity RV coefficient (SRVC), sensitivity similarity index (SSI), 
-#' sensitivity generalized coefficient of determination (SGCD), 
-#' sensitivity Coxhead's or Rozeboom's coefficient (SCRC), 
-#' and sponge module (SM) methods.
+#' sensitivity generalized coefficient of determination (SGCD), and
+#' sensitivity Coxhead's or Rozeboom's coefficient (SCRC) methods
 #'
 #' @title miRSM
 #' @param miRExp NULL (default) or a SummarizedExperiment object. miRNA expression data: 
@@ -4054,9 +3991,6 @@ diff_module <- function(Module.group1,
 #' @param RV_method the method of calculating RV coefficients. Select
 #' one of 'RV', 'RV2', 'RVadjMaye' and 'RVadjGhaziri' methods.
 #' Only for the SRVC method.
-#' @param BCmethod Specification of the biclustering method, 
-#' including 'BCBimax', 'BCCC', 'BCPlaid' (default), 'BCQuest', 
-#' 'BCSpectral', 'BCXmotifs'. Only for the SM method. 
 #' @param CRC_method the method of calculating matrix correlation. Select
 #' one of 'Coxhead' and 'Rozeboom' methods.
 #' Only for the SCRC method.
@@ -4076,16 +4010,6 @@ diff_module <- function(Module.group1,
 #' @importFrom stats phyper
 #' @importFrom GSEABase geneIds
 #' @importFrom WGCNA corAndPvalue
-#' @importFrom biclust biclust
-#' @importFrom biclust binarize
-#' @importFrom biclust discretize
-#' @importFrom biclust BCBimax
-#' @importFrom biclust BCCC
-#' @importFrom biclust BCPlaid
-#' @importFrom biclust BCQuest
-#' @importFrom biclust BCSpectral
-#' @importFrom biclust BCXmotifs
-#' @importFrom biclust biclusternumber
 #' @export
 #' @return List object: Group competition of miRNA sponge modules,
 #' and miRNA sponge modules.
@@ -4142,13 +4066,12 @@ miRSM <- function(miRExp = NULL,
                   typex = "standard", 
                   typez = "standard", 
                   nperms = 100, 
-                  method = c("SCC", "SDC", "SRVC", "SM", "SSI", "SGCD", "SCRC"),
+                  method = c("SCC", "SDC", "SRVC", "SSI", "SGCD", "SCRC"),
                   num_shared_miRNAs = 3, 
                   pvalue.cutoff = 0.05, 
                   MC.cutoff = 0.8,
                   SMC.cutoff = 0.1, 
                   RV_method = c("RV", "RV2", "RVadjMaye", "RVadjGhaziri"),
-                  BCmethod = "BCPlaid",
                   CRC_method = c("Coxhead", "Rozeboom")) {
 
     if (method == "SCC") {
@@ -4166,9 +4089,6 @@ miRSM <- function(miRExp = NULL,
             num_shared_miRNAs = num_shared_miRNAs,
             pvalue.cutoff = pvalue.cutoff, RVC.cutoff = MC.cutoff, 
             SRVC.cutoff = SMC.cutoff, RV_method = RV_method)
-    } else if (method == "SM") {
-        Res <- miRSM_SM(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, 
-            BCmethod = BCmethod, pvalue.cutoff = pvalue.cutoff)
     } else if (method == "SSI") {
         Res <- miRSM_SSI(miRExp = miRExp, ceRExp, mRExp = mRExp, miRTarget, CandidateModulegenes,
                        num_shared_miRNAs = num_shared_miRNAs,
@@ -4264,7 +4184,6 @@ miRSM_SS <- function(Modulelist.all,
 #' @importFrom clusterProfiler enrichKEGG
 #' @importFrom clusterProfiler compareCluster
 #' @importFrom DOSE enrichDO
-#' @importFrom DOSE enrichDGN
 #' @importFrom DOSE enrichNCG
 #' @importFrom ReactomePA enrichPathway
 #' @export
