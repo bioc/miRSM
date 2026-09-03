@@ -1,7 +1,7 @@
 Package: miRSM
 Type: Package
 Title: Inferring miRNA sponge modules in heterogeneous data
-Version: 2.9.2
+Version: 2.8.2
 Authors@R: 
     person(given = "Junpeng", 
            family = "Zhang", 
@@ -54,7 +54,7 @@ Imports: WGCNA,
     energy
 Suggests: BiocStyle, 
     knitr,
-    rmarkdown (<= 2.7),
+    rmarkdown,
     testthat
 VignetteBuilder: knitr, rmarkdown
 BugReports: https://github.com/zhangjunpeng411/miRSM/issues
